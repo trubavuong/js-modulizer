@@ -2,7 +2,7 @@
 // Setup application entry point.
 // ------------------------------------------------------------------
 
-var APP_NAME = 'app',
+var APP_NAME = '<%= entry_point %>',
     current_app = window[APP_NAME],
     new_app = (function () {
         var registered_modules = {},

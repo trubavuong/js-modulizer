@@ -85,6 +85,9 @@
         grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
 
+            // application entry point (src/js/main.js)
+            entry_point: 'app',
+
             clean: {
                 dist: {
                     src: ['dist']
@@ -139,8 +142,12 @@
                     options: {
                         banner: '(function () {\n    \'use strict\';\n\n',
                         footer: '\n}());',
-                        process: function (src) {
-                            return add_tab_to_each_line(formalize_js_src(src)) + '\n';
+                        process: function (src, path) {
+                            var s = add_tab_to_each_line(formalize_js_src(src));
+                            if (path === 'src/js/main.js') {
+                                s = grunt.template.process(s);
+                            }
+                            return s + '\n';
                         }
                     },
                     files: [{

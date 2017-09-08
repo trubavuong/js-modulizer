@@ -15,12 +15,13 @@
             output_js_file_name = app_dir + '/js/<%= pkg.name %>.js',
             output_js_min_file_name = app_dir + '/js/<%= pkg.name %>.min.js',
             exclude_js_src = [],
+            default_js_src = ['src/js/**/*.js', '!src/js/**/*.min.js'],
             base_js_src = ['src/js/polyfill.js', 'src/js/main.js'].filter(
                 function (value) {
                     return exclude_js_src.indexOf(value) === -1;
                 }
             ),
-            non_base_js_src = ['src/js/**/*.js', '!src/js/**/*.min.js'].concat(
+            non_base_js_src = default_js_src.concat(
                 exclude_js_src.concat(base_js_src).map(function (value) {
                     return '!' + value;
                 })
@@ -179,7 +180,7 @@
                 },
                 dist_before_concat: {
                     files: [{
-                        src: ['src/js/**/*.js', '!src/js/**/*.min.js']
+                        src: default_js_src
                     }]
                 },
                 dist_after_concat_default: {

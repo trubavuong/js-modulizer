@@ -1,4 +1,4 @@
-app.module('base.class', function () {
+app.module('util.class', function () {
     // Polyfill
     if (typeof Object.create !== 'function') {
         Object.create = function (object) {

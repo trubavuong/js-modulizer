@@ -28,6 +28,10 @@ app.module('util.class', function () {
      *
      * var DerivedClass = Class({
      *     $extends: SuperClass,
+     *     // $extends: [SuperClass],
+     *     // $extends: [SuperClass, MixinClassA, MixinClassB],
+     *     // *** support multiple inheritances:
+     *     //     first class is super class, others are mixins
      *
      *     $constructor: function (param, extra_param) {
      *         // call super constructor
@@ -52,12 +56,27 @@ app.module('util.class', function () {
 
         return function (obj_spec) {
             var F = obj_spec.$constructor || function () {},
-                prop, value, static_prop;
+                prop, value, static_prop, prototype, i;
 
             if (obj_spec.hasOwnProperty('$extends')) {
                 value = obj_spec.$extends;
-                F.prototype = Object.create(value.prototype);
-                F.prototype.$super = Object.create(value.prototype);
+                if (!(value instanceof Array)) {
+                    value = [value];
+                }
+                for (i = 0; i < value.length; i += 1) {
+                    prototype = value[i].prototype;
+                    if (i === 0) {
+                        F.prototype = Object.create(prototype);
+                    }
+                    else {
+                        for (prop in prototype) {
+                            if (prototype.hasOwnProperty(prop) && !(prop in F.prototype)) {
+                                F.prototype[prop] = prototype[prop];
+                            }
+                        }
+                    }
+                }
+                F.prototype.$super = Object.create(value[0].prototype);
                 F.prototype.constructor = F;
             }
 

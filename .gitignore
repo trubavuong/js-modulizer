@@ -15,6 +15,7 @@
 *.fs.index
 *.doxyfile
 *.mo
+package-lock.json
 .coverage
 .project
 .pydevproject

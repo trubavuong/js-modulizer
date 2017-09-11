@@ -6,7 +6,7 @@
             mocha_path = path.join('node_modules', '.bin', 'mocha'),
             _mocha_path = path.join('node_modules', 'mocha', 'bin', '_mocha'),
             istanbul_path = path.join('node_modules', '.bin', 'istanbul'),
-            unit_test_spec = ' test/unit --recursive --check-leaks --globals app --use_strict --require test/unit/helper.js -b -c ',
+            unit_test_spec = ' test/unit/ --recursive --check-leaks --globals app --use_strict --require test/unit/helper.js -b -c ',
             e2e_test_spec = ' test/e2e/**/*.spec.js ',
             app_name = '<%= pkg.name %>',
             app_root_dir = 'dist/' + app_name,

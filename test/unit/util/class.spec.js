@@ -65,6 +65,58 @@ describe('util.class', function () {
             expect(s.get_long_name()).to.equal(name + ' plus');
         });
 
+        it('should support inheritance with overridden method correctly', function () {
+            var Person = Class({
+                    $constructor: function (name) {
+                        this.name = name;
+                    },
+                    get_name: function () {
+                        return name;
+                    }
+                }),
+                Student = Class({
+                    $constructor: function (name) {
+                        this.$super.constructor.call(this, name);
+                    },
+                    $extends: Person,
+                    get_name: function () {
+                        return this.$super.get_name.call(this) + ' wrapper';
+                    },
+                    get_long_name: function () {
+                        return this.get_name() + ' plus';
+                    }
+                }),
+                name = 'Bob',
+                s = new Student(name);
+
+            expect(s.name).to.equal(name);
+            expect(s.get_name()).to.equal(name + ' wrapper');
+            expect(s.get_long_name()).to.equal(name + ' wrapper plus');
+        });
+
+        it('should support inheritance with default constructor correctly', function () {
+            var Person = Class({
+                    $constructor: function (name) {
+                        this.name = name;
+                    },
+                    get_name: function () {
+                        return name;
+                    }
+                }),
+                Student = Class({
+                    $extends: [Person],
+                    get_long_name: function () {
+                        return this.get_name() + ' plus';
+                    }
+                }),
+                name = 'Bob',
+                s = new Student(name);
+
+            expect(s.name).to.equal(name);
+            expect(s.get_name()).to.equal(name);
+            expect(s.get_long_name()).to.equal(name + ' plus');
+        });
+
         it('should support inheritance with array style correctly', function () {
             var Person = Class({
                     $constructor: function (name) {

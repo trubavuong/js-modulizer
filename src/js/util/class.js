@@ -52,10 +52,15 @@ app.module('util.class', function () {
      *
      */
     var Class = (function () {
-        var RESERVED_KEYWORDS = ['$constructor', '$extends', '$static'];
+        var RESERVED_KEYWORDS = ['$constructor', '$extends', '$static', '$super'];
 
         return function (obj_spec) {
-            var F = obj_spec.$constructor || function () {},
+            var F = obj_spec.$constructor ||
+                function () {
+                    if (this.$super) {
+                        this.$super.constructor.apply(this, Array.prototype.slice.call(arguments));
+                    }
+                },
                 prop, value, static_prop, prototype, i;
 
             if (obj_spec.hasOwnProperty('$extends')) {
@@ -66,9 +71,11 @@ app.module('util.class', function () {
                 for (i = 0; i < value.length; i += 1) {
                     prototype = value[i].prototype;
                     if (i === 0) {
+                        // super class
                         F.prototype = Object.create(prototype);
                     }
                     else {
+                        // mixins
                         for (prop in prototype) {
                             if (prototype.hasOwnProperty(prop) && !(prop in F.prototype)) {
                                 F.prototype[prop] = prototype[prop];

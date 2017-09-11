@@ -12,11 +12,11 @@ app.module('util.class', function () {
      * Usage:
      *
      * var SuperClass = Class({
-     *     $$constructor: function (param) {
+     *     $constructor: function (param) {
      *         this.param = param;
      *     },
      *
-     *     $$static: {
+     *     $static: {
      *         STATIC_VAR: 100,
      *         static_method: function () {}
      *     },
@@ -27,9 +27,9 @@ app.module('util.class', function () {
      * });
      *
      * var DerivedClass = Class({
-     *     $$extends: SuperClass,
+     *     $extends: SuperClass,
      *
-     *     $$constructor: function (param, extra_param) {
+     *     $constructor: function (param, extra_param) {
      *         // call super constructor
      *         this.$super.constructor.call(this, param);
      *         this.extra_param = extra_param;
@@ -48,14 +48,14 @@ app.module('util.class', function () {
      *
      */
     var Class = (function () {
-        var RESERVED_KEYWORDS = ['$$constructor', '$$extends', '$$static'];
+        var RESERVED_KEYWORDS = ['$constructor', '$extends', '$static'];
 
         return function (obj_spec) {
-            var F = obj_spec.$$constructor || function () {},
+            var F = obj_spec.$constructor || function () {},
                 prop, value, static_prop;
 
-            if (obj_spec.hasOwnProperty('$$extends')) {
-                value = obj_spec.$$extends;
+            if (obj_spec.hasOwnProperty('$extends')) {
+                value = obj_spec.$extends;
                 F.prototype = Object.create(value.prototype);
                 F.prototype.$super = Object.create(value.prototype);
                 F.prototype.constructor = F;
@@ -64,7 +64,7 @@ app.module('util.class', function () {
             for (prop in obj_spec) {
                 if (obj_spec.hasOwnProperty(prop)) {
                     value = obj_spec[prop];
-                    if (prop === '$$static') {
+                    if (prop === '$static') {
                         for (static_prop in value) {
                             if (value.hasOwnProperty(static_prop)) {
                                 F[static_prop] = value[static_prop];

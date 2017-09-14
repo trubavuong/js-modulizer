@@ -5,48 +5,52 @@
 var APP_NAME = '<%= entry_point %>',
     current_app = window[APP_NAME],
     new_app = (function () {
-        var registered_modules = {},
-            executed_modules = {},
+        var MODULE_STATUS = {
+                NONE: 0,
+                LOADING: 'loading...',
+                LOADED: 'ok'
+            },
+            modules = {},
             module_id = 0;
 
         function module(name, handler) {
-            var is_registered = name in registered_modules;
+            var is_registered = name in modules,
+                mod;
             // getter
             if (handler === undefined) {
                 if (!is_registered) {
                     throw new Error('Module "' + name + '" could not be found');
                 }
 
-                // not executed module
-                if (!(name in executed_modules)) {
+                // not loaded module
+                mod = modules[name];
+                if (mod.status === MODULE_STATUS.NONE) {
                     // mark it's loading
                     module_id += 1;
-                    executed_modules[name] = {
-                        name: name,
-                        is_loaded: false,
-                        id: module_id
-                    };
+                    mod.id = module_id;
+                    mod.status = MODULE_STATUS.LOADING;
 
                     // then mark it's loaded
-                    executed_modules[name].value = registered_modules[name]();
-                    executed_modules[name].is_loaded = true;
+                    mod.value = mod.value();
+                    mod.status = MODULE_STATUS.LOADED;
                 }
-
-                var module_state = executed_modules[name];
                 // try to load 'not loaded' module again => circular dependencies
-                if (!module_state.is_loaded) {
+                else if (mod.status === MODULE_STATUS.LOADING) {
                     // print stack trace
-                    var executed_modules_list = [],
+                    var modules_list = [],
                         stack = '',
                         module_name,
                         module,
                         i;
 
-                    for (module_name in executed_modules) {
-                        executed_modules_list.push(executed_modules[module_name]);
+                    for (module_name in modules) {
+                        mod = modules[module_name];
+                        if (mod.status !== MODULE_STATUS.NONE) {
+                            modules_list.push(modules[module_name]);
+                        }
                     }
 
-                    executed_modules_list.sort(function (m1, m2) {
+                    modules_list.sort(function (m1, m2) {
                         if (m1.id === m2.id) {
                             return 0;
                         }
@@ -55,24 +59,34 @@ var APP_NAME = '<%= entry_point %>',
                         }
                         return 1;
                     });
-                    executed_modules_list.push(module_state);
+                    modules_list.push(mod);
 
-                    for (i = 0; i < executed_modules_list.length; i += 1) {
-                        module = executed_modules_list[i];
-                        stack += module.id + '. (' + module.name + ' => ' + (module.is_loaded ? 'ok' : 'loading...') + ')\n';
+                    for (i = 0; i < modules_list.length; i += 1) {
+                        module = modules_list[i];
+                        stack += module.id + '. (' + module.name + ' => ' + module.status + ')\n';
                     }
 
                     throw new Error('Circular dependencies could not be resolved while loading module "' +
                         name + '".\n\nLoading modules information:\n' + stack);
                 }
-                return module_state.value;
+                return mod.value;
             }
             // setter
             else {
                 if (is_registered) {
                     throw new Error('Module "' + name + '" had been already registered');
                 }
-                registered_modules[name] = handler;
+
+                mod = modules[name] = {
+                    name: name,
+                    status: typeof handler === 'function' ? MODULE_STATUS.NONE : MODULE_STATUS.LOADED,
+                    value: handler
+                };
+
+                if (mod.status === MODULE_STATUS.LOADED) {
+                    module_id += 1;
+                    mod.id = module_id;
+                }
             }
         }
 

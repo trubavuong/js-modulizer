@@ -91,6 +91,12 @@ describe('app', function () {
                     app.module(module_name, function () {});
                 }).to.throw(module_name);
             });
+
+            it('should work with non-function param', function () {
+                var value = 1000;
+                app.module(module_name, value);
+                expect(app.module(module_name)).to.deep.equal(value);
+            });
         });
     });
 });

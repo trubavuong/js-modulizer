@@ -13,6 +13,30 @@ var APP_NAME = '<%= entry_point %>',
             modules = {},
             module_id = 0;
 
+        /**
+         * Module getter/setter.
+         *
+         * If handler is omitted, returns registered module.
+         * If handler is a function, returned value of function execution will be
+         * module value. Otherwise, it's also module value immediately.
+         *
+         * Usage:
+         *     // setter
+         *     app.module('constants', {
+         *         X: 1,
+         *         Y: 2
+         *     });
+         *
+         *     // setter
+         *     app.module('width', function () {
+         *         var constants = app.module('constants'); // getter
+         *         return constants.X * 100;
+         *     });
+         *
+         * @param  {String} name    module name
+         * @param  {*}      handler function or anything else
+         * @return {*}              module for getter
+         */
         function module(name, handler) {
             var is_registered = name in modules,
                 mod;

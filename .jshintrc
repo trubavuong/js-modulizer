@@ -14,5 +14,5 @@
     "loopfunc": true,
     "browser": true,
     "strict": false,
-    "predef": ["$", "jQuery", "app", "require", "module", "global", "console", "describe", "it", "beforeEach", "afterEach"]
+    "predef": ["$", "jQuery", "app", "define", "require", "module", "global", "console", "describe", "it", "beforeEach", "afterEach"]
 }

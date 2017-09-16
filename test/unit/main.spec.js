@@ -11,6 +11,13 @@ describe('app', function () {
         helper.unload_app();
     });
 
+    describe('application entry point', function () {
+        it('should create application entry point', function () {
+            expect(app).to.be.an('object');
+            expect(app).to.equal(window.app);
+        });
+    });
+
     describe('module()', function () {
         describe('getter', function () {
             it('should throw an error if module does not exist', function () {
@@ -30,7 +37,7 @@ describe('app', function () {
                     return obj1;
                 });
                 obj2 = app.module(module_name);
-                expect(obj1).to.deep.equal(obj2);
+                expect(obj1).to.equal(obj2);
             });
 
             describe('circular dependencies', function () {
@@ -95,7 +102,7 @@ describe('app', function () {
             it('should work with non-function param', function () {
                 var value = 1000;
                 app.module(module_name, value);
-                expect(app.module(module_name)).to.deep.equal(value);
+                expect(app.module(module_name)).to.equal(value);
             });
         });
     });

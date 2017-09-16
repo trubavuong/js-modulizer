@@ -71,7 +71,8 @@
         grunt.registerTask('release', ['dist', 'compress:dist']);
         grunt.registerTask('concat:dist', [
             'concat:dist_non_base_js_src',
-            'concat:dist_base_js_src'
+            'concat:dist_base_js_src',
+            'concat:dist_merge_template'
         ]);
         grunt.registerTask('jshint:dist_after_concat', [
             'jshint:dist_after_concat_default',
@@ -79,6 +80,7 @@
         ]);
 
         grunt.registerTask('unit', ['shell:unit_test']);
+        grunt.registerTask('unit_debug', ['shell:unit_debug']);
         grunt.registerTask('unit_cover', ['shell:unit_cover']);
         grunt.registerTask('e2e', ['shell:e2e_test']);
 
@@ -87,7 +89,7 @@
             pkg: grunt.file.readJSON('package.json'),
 
             // application entry point (src/js/main.js)
-            entry_point: 'app',
+            app_name: 'app',
 
             clean: {
                 dist: {
@@ -128,10 +130,8 @@
             concat: {
                 dist_non_base_js_src: {
                     options: {
-                        banner: '(function (app) {\n\n',
-                        footer: '\n}(new_app));',
                         process: function (src) {
-                            return add_tab_to_each_line(formalize_js_src(src)) + '\n';
+                            return formalize_js_src(src) + '\n';
                         }
                     },
                     files: [{
@@ -141,18 +141,37 @@
                 },
                 dist_base_js_src: {
                     options: {
-                        banner: '(function () {\n    \'use strict\';\n\n',
-                        footer: '\n}());',
                         process: function (src, path) {
                             var s = add_tab_to_each_line(formalize_js_src(src));
                             if (path === 'src/js/main.js') {
-                                s = grunt.template.process(s);
+                                s = s.replace(/\s*\/\*\s*jshint\s+.+\r?\n/, '\n');
                             }
                             return s + '\n';
                         }
                     },
                     files: [{
                         src: ordered_js_src,
+                        dest: output_js_file_name
+                    }]
+                },
+                dist_merge_template: {
+                    options: {
+                        process: function (src) {
+                            var output_file = grunt.template.process(output_js_file_name),
+                                app_name = grunt.template.process('<%= app_name %>'),
+                                app_decleration = grunt.file.read(output_file, {
+                                    encoding: 'utf8'
+                                });
+                            return grunt.template.process(src, {
+                                data: {
+                                    app_name: app_name,
+                                    app_decleration: app_decleration
+                                }
+                            });
+                        }
+                    },
+                    files: [{
+                        src: ['src/js/umd.js.tpl'],
                         dest: output_js_file_name
                     }]
                 }
@@ -247,6 +266,11 @@
                 unit_test: {
                     command: function () {
                         return mocha_path + unit_test_spec;
+                    }
+                },
+                unit_debug: {
+                    command: function () {
+                        return 'node-debug ' + _mocha_path + unit_test_spec;
                     }
                 },
                 unit_cover: {

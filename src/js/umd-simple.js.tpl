@@ -5,7 +5,6 @@
     var APP_NAME = '<%= app_name %>';
 
     <%= app_decleration %>
-
     // UMD: AMD + CommonJS + Browser
     if (typeof define === 'function' && define.amd) {
         // AMD

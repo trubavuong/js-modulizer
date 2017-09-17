@@ -171,7 +171,8 @@
                         }
                     },
                     files: [{
-                        src: ['src/js/umd.js.tpl'],
+                        // src: ['src/js/umd.js.tpl'],
+                        src: ['src/js/umd-simple.js.tpl'],
                         dest: output_js_file_name
                     }]
                 }

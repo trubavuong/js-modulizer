@@ -15,8 +15,7 @@
         // AMD
         define(execute_factory);
     }
-    else if (module && typeof module === 'object' &&
-        module.exports && typeof module.exports === 'object') {
+    else if (typeof module === 'object' && module.exports) {
         // CommonJS
         module.exports = execute_factory();
     }

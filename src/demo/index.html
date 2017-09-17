@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>[Demo] js-modulizer</title>
+</head>
+<body>
+	<ul>
+		<li id="person"></li>
+		<li id="student"></li>
+	</ul>
+
+	<script type="text/javascript" src="../js/js-modulizer.min.js"></script>
+
+	<script>
+		app.module('person', function () {
+			var Class = app.module('util.class');
+			return Class({
+				$constructor: function (name) {
+					this.name = name;
+				},
+				say: function (msg) {
+					return '[Person] My name is ' + this.name + '. I want to say "' + msg + '"';
+				}
+			});
+		});
+
+		app.module('student', function () {
+			var Class = app.module('util.class'),
+				Person = app.module('person');
+			return Class({
+				$extends: Person,
+				say: function (msg) {
+					return '[Student] My name is ' + this.name + '. I want to say "' + msg + '"';
+				}
+			});
+		});
+
+		var Person = app.module('person'),
+			Student = app.module('student'),
+			p = new Person('Jack'),
+			s = new Student('Mary');
+		document.getElementById('person').innerText = p.say('Hello!');
+		document.getElementById('student').innerText = s.say('Bye!');
+	</script>
+</body>
+</html>

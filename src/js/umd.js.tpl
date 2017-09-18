@@ -2,7 +2,7 @@
     'use strict';
 
     // Change app name to anything to use as global entry point
-    var APP_NAME = '<%= app_name %>';
+    var APP_NAME = 'app';
 
     function execute_factory() {
         if (APP_NAME in root) {

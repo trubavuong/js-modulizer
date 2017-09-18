@@ -88,9 +88,6 @@
         grunt.initConfig({
             pkg: grunt.file.readJSON('package.json'),
 
-            // application entry point (src/js/main.js)
-            app_name: 'app',
-
             clean: {
                 dist: {
                     src: ['dist']
@@ -158,13 +155,11 @@
                     options: {
                         process: function (src) {
                             var output_file = grunt.template.process(output_js_file_name),
-                                app_name = grunt.template.process('<%= app_name %>'),
                                 app_decleration = grunt.file.read(output_file, {
                                     encoding: 'utf8'
                                 });
                             return grunt.template.process(src, {
                                 data: {
-                                    app_name: app_name,
                                     app_decleration: app_decleration
                                 }
                             });

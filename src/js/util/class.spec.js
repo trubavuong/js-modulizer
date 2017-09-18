@@ -1,6 +1,5 @@
 describe('util.class', function () {
     var expect = require('chai').expect,
-        helper = require('../helper'),
         Class;
 
     beforeEach(function () {

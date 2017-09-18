@@ -1,7 +1,7 @@
 // create 'window' entry point
 global.window = global;
 
-module.exports = {
+module.exports = global.helper = {
     _app_path: '../../dist/js-modulizer/js-modulizer/js/js-modulizer.min.js',
 
     load_app: function () {

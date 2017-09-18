@@ -1,6 +1,5 @@
 describe('app', function () {
     var expect = require('chai').expect,
-        helper = require('./helper'),
         module_name = 'module';
 
     beforeEach(function () {

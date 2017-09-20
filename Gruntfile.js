@@ -3,36 +3,36 @@
 
     module.exports = function (grunt) {
         var path = require('path'),
-            mocha_path = path.join('node_modules', '.bin', 'mocha'),
-            _mocha_path = path.join('node_modules', 'mocha', 'bin', '_mocha'),
-            istanbul_path = path.join('node_modules', '.bin', 'istanbul'),
-            unit_test_spec = ' src/**/*.spec.js --recursive --check-leaks --globals app --use_strict --require test/unit/helper.js -b -c ',
-            e2e_test_spec = ' test/e2e/**/*.spec.js ',
-            app_name = '<%= pkg.name %>',
-            app_root_dir = 'dist/' + app_name,
-            app_dir = app_root_dir + '/<%= pkg.name %>',
-            archive_file_name = app_root_dir + '-<%= pkg.version %>.zip',
-            output_js_file_name = app_dir + '/js/<%= pkg.name %>.js',
-            output_js_min_file_name = app_dir + '/js/<%= pkg.name %>.min.js',
-            exclude_js_src = [],
-            default_js_src = ['src/js/**/*.js', '!src/js/**/*.min.js', '!src/js/**/*.spec.js'],
-            base_js_src = ['src/js/polyfill.js', 'src/js/main.js'].filter(
+            mochaPath = path.join('node_modules', '.bin', 'mocha'),
+            _mochaPath = path.join('node_modules', 'mocha', 'bin', '_mocha'),
+            istanbulPath = path.join('node_modules', '.bin', 'istanbul'),
+            unitTestSpec = ' src/**/*.spec.js --recursive --check-leaks --globals app --use_strict --require test/unit/helper.js -b -c ',
+            e2eTestSpec = ' test/e2e/**/*.spec.js ',
+            appName = '<%= pkg.name %>',
+            appRootDir = 'dist/' + appName,
+            appDir = appRootDir + '/<%= pkg.name %>',
+            archiveFileName = appRootDir + '-<%= pkg.version %>.zip',
+            outputJsFileName = appDir + '/js/<%= pkg.name %>.js',
+            outputJsMinFileName = appDir + '/js/<%= pkg.name %>.min.js',
+            excludeJsSrc = [],
+            defaultJsSrc = ['src/js/**/*.js', '!src/js/**/*.min.js', '!src/js/**/*.spec.js'],
+            baseJsSrc = ['src/js/polyfill.js', 'src/js/main.js'].filter(
                 function (value) {
-                    return exclude_js_src.indexOf(value) === -1;
+                    return excludeJsSrc.indexOf(value) === -1;
                 }
             ),
-            non_base_js_src = default_js_src.concat(
-                exclude_js_src.concat(base_js_src).map(function (value) {
+            nonBaseJsSrc = defaultJsSrc.concat(
+                excludeJsSrc.concat(baseJsSrc).map(function (value) {
                     return '!' + value;
                 })
             ),
-            ordered_js_src = base_js_src.concat(output_js_file_name);
+            orderedJsSrc = baseJsSrc.concat(outputJsFileName);
 
-        function formalize_js_src(src) {
+        function formalizeJsSrc(src) {
             return src.replace(/^\s*('use strict'|"use strict");?/gm, '').trim();
         }
 
-        function add_tab_to_each_line(src) {
+        function addTabToEachLine(src) {
             return src.replace(/^(.+)$/gm, '    $1');
         }
 
@@ -42,47 +42,47 @@
         grunt.loadNpmTasks('grunt-contrib-compress');
         grunt.loadNpmTasks('grunt-contrib-concat');
         grunt.loadNpmTasks('grunt-contrib-cssmin');
-        grunt.loadNpmTasks('grunt-contrib-jshint');
         grunt.loadNpmTasks('grunt-contrib-sass');
         grunt.loadNpmTasks('grunt-contrib-uglify');
+        grunt.loadNpmTasks('grunt-eslint');
         grunt.loadNpmTasks('grunt-shell');
 
         // Tasks
         grunt.registerTask('dist', [
             'clean:dist',
-            'jshint:dist_before_concat',
+            'eslint:distBeforeConcat',
             'concat:dist',
-            'jshint:dist_after_concat',
+            'eslint:distAfterConcat',
             'uglify:dist',
             'sass:dist',
             'cssmin:dist',
             'copy:dist'
         ]);
-        grunt.registerTask('dist_debug', [
+        grunt.registerTask('dist-debug', [
             'clean:dist',
-            'jshint:dist_before_concat',
+            'eslint:distBeforeConcat',
             'concat:dist',
-            'jshint:dist_after_concat',
-            'uglify:dist_debug',
+            'eslint:distAfterConcat',
+            'uglify:distDebug',
             'sass:dist',
             'cssmin:dist',
             'copy:dist'
         ]);
         grunt.registerTask('release', ['dist', 'compress:dist']);
         grunt.registerTask('concat:dist', [
-            'concat:dist_non_base_js_src',
-            'concat:dist_base_js_src',
-            'concat:dist_merge_template'
+            'concat:distNonBaseJsSrc',
+            'concat:distBaseJsSrc',
+            'concat:distMergeTemplate'
         ]);
-        grunt.registerTask('jshint:dist_after_concat', [
-            'jshint:dist_after_concat_default',
-            'jshint:dist_after_concat_strict'
+        grunt.registerTask('eslint:distAfterConcat', [
+            'eslint:distAfterConcatDefault',
+            'eslint:distAfterConcatStrict'
         ]);
 
-        grunt.registerTask('unit', ['shell:unit_test']);
-        grunt.registerTask('unit_debug', ['shell:unit_debug']);
-        grunt.registerTask('unit_cover', ['shell:unit_cover']);
-        grunt.registerTask('e2e', ['shell:e2e_test']);
+        grunt.registerTask('unit', ['shell:unitTest']);
+        grunt.registerTask('unit-debug', ['shell:unitDebug']);
+        grunt.registerTask('unit-cover', ['shell:unitCover']);
+        grunt.registerTask('e2e', ['shell:e2eTest']);
 
         // Project configuration
         grunt.initConfig({
@@ -99,23 +99,23 @@
                     files: [{
                         expand: true,
                         src: ['vendor/**/*', 'CHANGELOG.md'],
-                        dest: app_dir
+                        dest: appDir
                     }, {
                         expand: true,
                         src: ['doc/**/*'],
-                        dest: app_root_dir
+                        dest: appRootDir
                     }, {
                         expand: true,
                         cwd: 'src',
                         src: ['font/**/*', 'img/**/*', 'demo/**/*'],
-                        dest: app_dir
+                        dest: appDir
                     }]
                 }
             },
 
             compress: {
                 options: {
-                    archive: archive_file_name
+                    archive: archiveFileName
                 },
                 dist: {
                     expand: true,
@@ -125,42 +125,42 @@
             },
 
             concat: {
-                dist_non_base_js_src: {
+                distNonBaseJsSrc: {
                     options: {
                         process: function (src) {
-                            return formalize_js_src(src) + '\n';
+                            return formalizeJsSrc(src) + '\n';
                         }
                     },
                     files: [{
-                        src: non_base_js_src,
-                        dest: output_js_file_name
+                        src: nonBaseJsSrc,
+                        dest: outputJsFileName
                     }]
                 },
-                dist_base_js_src: {
+                distBaseJsSrc: {
                     options: {
                         process: function (src, path) {
-                            var s = add_tab_to_each_line(formalize_js_src(src));
+                            var s = addTabToEachLine(formalizeJsSrc(src));
                             if (path === 'src/js/main.js') {
-                                s = s.replace(/\s*\/\*\s*jshint\s+.+\r?\n/, '\n');
+                                s = s.replace(/\s*\/\/\s*eslint-disable-line[^\r\n\S]*/, '');
                             }
                             return s + '\n';
                         }
                     },
                     files: [{
-                        src: ordered_js_src,
-                        dest: output_js_file_name
+                        src: orderedJsSrc,
+                        dest: outputJsFileName
                     }]
                 },
-                dist_merge_template: {
+                distMergeTemplate: {
                     options: {
                         process: function (src) {
-                            var output_file = grunt.template.process(output_js_file_name),
-                                app_decleration = grunt.file.read(output_file, {
+                            var outputFile = grunt.template.process(outputJsFileName),
+                                appDecleration = grunt.file.read(outputFile, {
                                     encoding: 'utf8'
                                 });
                             return grunt.template.process(src, {
                                 data: {
-                                    app_decleration: app_decleration
+                                    appDecleration: appDecleration
                                 }
                             });
                         }
@@ -168,7 +168,7 @@
                     files: [{
                         // src: ['src/js/umd.js.tpl'],
                         src: ['src/js/umd-simple.js.tpl'],
-                        dest: output_js_file_name
+                        dest: outputJsFileName
                     }]
                 }
             },
@@ -180,36 +180,40 @@
                 dist: {
                     files: [{
                         expand: true,
-                        cwd: app_dir + '/css',
+                        cwd: appDir + '/css',
                         src: ['**/*.css', '!**/*.min.css'],
-                        dest: app_dir + '/css',
+                        dest: appDir + '/css',
                         ext: '.min.css',
                         filter: 'isFile'
                     }]
                 }
             },
 
-            jshint: {
+            eslint: {
                 options: {
-                    jshintrc: '.jshintrc'
+                    configFile: '.eslintrc'
                 },
-                dist_before_concat: {
+                distBeforeConcat: {
                     files: [{
-                        src: default_js_src
+                        src: defaultJsSrc
                     }]
                 },
-                dist_after_concat_default: {
+                distAfterConcatDefault: {
                     files: [{
-                        src: output_js_file_name
+                        src: outputJsFileName
                     }]
                 },
-                dist_after_concat_strict: {
+                distAfterConcatStrict: {
                     options: {
-                        jshintrc: undefined,
-                        strict: true
+                        parserOptions: {
+                            sourceType: 'script'
+                        },
+                        rules: {
+                            strict: ['error', 'function']
+                        }
                     },
                     files: [{
-                        src: output_js_file_name
+                        src: outputJsFileName
                     }]
                 }
             },
@@ -223,7 +227,7 @@
                 dist: {
                     files: [{
                         src: 'src/scss/main.scss',
-                        dest: app_dir + '/css/<%= pkg.name %>.css'
+                        dest: appDir + '/css/<%= pkg.name %>.css'
                     }]
                 }
             },
@@ -235,11 +239,11 @@
                 },
                 dist: {
                     files: [{
-                        src: output_js_file_name,
-                        dest: output_js_min_file_name
+                        src: outputJsFileName,
+                        dest: outputJsMinFileName
                     }]
                 },
-                dist_debug: {
+                distDebug: {
                     options: {
                         sourceMap: true,
                         output: {
@@ -247,8 +251,8 @@
                         }
                     },
                     files: [{
-                        src: output_js_file_name,
-                        dest: output_js_min_file_name
+                        src: outputJsFileName,
+                        dest: outputJsMinFileName
                     }]
                 }
             },
@@ -259,28 +263,28 @@
                         maxBuffer: 10 * 1024 * 1024
                     }
                 },
-                unit_test: {
+                unitTest: {
                     command: function () {
-                        return mocha_path + unit_test_spec;
+                        return mochaPath + unitTestSpec;
                     }
                 },
-                unit_debug: {
+                unitDebug: {
                     command: function () {
-                        return 'node-debug ' + _mocha_path + unit_test_spec;
+                        return 'node-debug ' + _mochaPath + unitTestSpec;
                     }
                 },
-                unit_cover: {
+                unitCover: {
                     command: function () {
-                        return istanbul_path + ' cover ' + _mocha_path + ' -- -R spec ' + unit_test_spec;
+                        return istanbulPath + ' cover ' + _mochaPath + ' -- -R spec ' + unitTestSpec;
                     }
                 },
-                e2e_test: {
+                e2eTest: {
                     command: function () {
                         var browser = grunt.option('browser').trim();
                         if (browser === 'remote') {
                             browser += ' --ports 50900,50901';
                         }
-                        return 'testcafe --color ' + browser + e2e_test_spec;
+                        return 'testcafe --color ' + browser + e2eTestSpec;
                     }
                 }
             }

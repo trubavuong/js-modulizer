@@ -1,13 +1,13 @@
 describe('app', function () {
     var expect = require('chai').expect,
-        module_name = 'module';
+        moduleName = 'module';
 
     beforeEach(function () {
-        helper.load_app();
+        helper.loadApp();
     });
 
     afterEach(function () {
-        helper.unload_app();
+        helper.unloadApp();
     });
 
     describe('application entry point', function () {
@@ -21,8 +21,8 @@ describe('app', function () {
         describe('getter', function () {
             it('should throw an error if module does not exist', function () {
                 expect(function () {
-                    app.module(module_name);
-                }).to.throw(module_name);
+                    app.module(moduleName);
+                }).to.throw(moduleName);
             });
 
             it('should return correct module', function () {
@@ -32,10 +32,10 @@ describe('app', function () {
                         c: 3
                     },
                     obj2;
-                app.module(module_name, function () {
+                app.module(moduleName, function () {
                     return obj1;
                 });
-                obj2 = app.module(module_name);
+                obj2 = app.module(moduleName);
                 expect(obj1).to.equal(obj2);
             });
 
@@ -87,21 +87,21 @@ describe('app', function () {
         describe('setter', function () {
             it('should not throw an error if module does not exists', function () {
                 expect(function () {
-                    app.module(module_name, function () {});
+                    app.module(moduleName, function () {});
                 }).to.not.throw();
             });
 
             it('should throw an error if module exists', function () {
-                app.module(module_name, function () {});
+                app.module(moduleName, function () {});
                 expect(function () {
-                    app.module(module_name, function () {});
-                }).to.throw(module_name);
+                    app.module(moduleName, function () {});
+                }).to.throw(moduleName);
             });
 
             it('should work with non-function param', function () {
                 var value = 1000;
-                app.module(module_name, value);
-                expect(app.module(module_name)).to.equal(value);
+                app.module(moduleName, value);
+                expect(app.module(moduleName)).to.equal(value);
             });
         });
     });

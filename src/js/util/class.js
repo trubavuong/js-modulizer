@@ -54,17 +54,17 @@ app.module('util.class', function () {
     var Class = (function () {
         var RESERVED_KEYWORDS = ['$constructor', '$extends', '$static', '$super'];
 
-        return function (obj_spec) {
-            var F = obj_spec.$constructor ||
+        return function (objSpec) {
+            var F = objSpec.$constructor ||
                 function () {
                     if (this.$super) {
                         this.$super.constructor.apply(this, Array.prototype.slice.call(arguments));
                     }
                 },
-                prop, value, static_prop, prototype, i;
+                prop, value, staticProp, prototype, i;
 
-            if (obj_spec.hasOwnProperty('$extends')) {
-                value = obj_spec.$extends;
+            if (objSpec.hasOwnProperty('$extends')) {
+                value = objSpec.$extends;
                 if (!(value instanceof Array)) {
                     value = [value];
                 }
@@ -87,13 +87,13 @@ app.module('util.class', function () {
                 F.prototype.constructor = F;
             }
 
-            for (prop in obj_spec) {
-                if (obj_spec.hasOwnProperty(prop)) {
-                    value = obj_spec[prop];
+            for (prop in objSpec) {
+                if (objSpec.hasOwnProperty(prop)) {
+                    value = objSpec[prop];
                     if (prop === '$static') {
-                        for (static_prop in value) {
-                            if (value.hasOwnProperty(static_prop)) {
-                                F[static_prop] = value[static_prop];
+                        for (staticProp in value) {
+                            if (value.hasOwnProperty(staticProp)) {
+                                F[staticProp] = value[staticProp];
                             }
                         }
                     }

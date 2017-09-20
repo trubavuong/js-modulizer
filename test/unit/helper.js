@@ -2,13 +2,13 @@
 global.window = global;
 
 module.exports = global.helper = {
-    _app_path: '../../dist/js-modulizer/js-modulizer/js/js-modulizer.min.js',
+    _appPath: '../../dist/js-modulizer/js-modulizer/js/js-modulizer.min.js',
 
-    load_app: function () {
-        window.app = require(this._app_path);
+    loadApp: function () {
+        window.app = require(this._appPath);
     },
-    unload_app: function () {
+    unloadApp: function () {
         delete window.app;
-        delete require.cache[require.resolve(this._app_path)];
+        delete require.cache[require.resolve(this._appPath)];
     }
 };

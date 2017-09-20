@@ -27,7 +27,7 @@
 }(typeof global !== 'undefined' ? global : (this.window || this.global), function () {
     'use strict';
 
-<%= app_decleration %>
+<%= appDecleration %>
     return app;
 
 }));

@@ -3,12 +3,12 @@ describe('util.class', function () {
         Class;
 
     beforeEach(function () {
-        helper.load_app();
+        helper.loadApp();
         Class = app.module('util.class');
     });
 
     afterEach(function () {
-        helper.unload_app();
+        helper.unloadApp();
     });
 
     describe('Class', function () {
@@ -23,15 +23,15 @@ describe('util.class', function () {
                             return msg;
                         }
                     },
-                    get_name: function () {
-                        return name;
+                    getName: function () {
+                        return this.name;
                     }
                 }),
                 name = 'Bob',
                 p = new Person(name);
 
             expect(p.name).to.equal(name);
-            expect(p.get_name()).to.equal(name);
+            expect(p.getName()).to.equal(name);
 
             expect(Person.ID).to.equal(999);
             expect(Person.say(name)).to.equal(name);
@@ -43,8 +43,8 @@ describe('util.class', function () {
                     $constructor: function (name) {
                         this.name = name;
                     },
-                    get_name: function () {
-                        return name;
+                    getName: function () {
+                        return this.name;
                     }
                 }),
                 Student = Class({
@@ -52,16 +52,16 @@ describe('util.class', function () {
                         this.$super.constructor.call(this, name);
                     },
                     $extends: Person,
-                    get_long_name: function () {
-                        return this.get_name() + ' plus';
+                    getLongName: function () {
+                        return this.getName() + ' plus';
                     }
                 }),
                 name = 'Bob',
                 s = new Student(name);
 
             expect(s.name).to.equal(name);
-            expect(s.get_name()).to.equal(name);
-            expect(s.get_long_name()).to.equal(name + ' plus');
+            expect(s.getName()).to.equal(name);
+            expect(s.getLongName()).to.equal(name + ' plus');
         });
 
         it('should support inheritance with overridden method correctly', function () {
@@ -69,8 +69,8 @@ describe('util.class', function () {
                     $constructor: function (name) {
                         this.name = name;
                     },
-                    get_name: function () {
-                        return name;
+                    getName: function () {
+                        return this.name;
                     }
                 }),
                 Student = Class({
@@ -78,19 +78,19 @@ describe('util.class', function () {
                         this.$super.constructor.call(this, name);
                     },
                     $extends: Person,
-                    get_name: function () {
-                        return this.$super.get_name.call(this) + ' wrapper';
+                    getName: function () {
+                        return this.$super.getName.call(this) + ' wrapper';
                     },
-                    get_long_name: function () {
-                        return this.get_name() + ' plus';
+                    getLongName: function () {
+                        return this.getName() + ' plus';
                     }
                 }),
                 name = 'Bob',
                 s = new Student(name);
 
             expect(s.name).to.equal(name);
-            expect(s.get_name()).to.equal(name + ' wrapper');
-            expect(s.get_long_name()).to.equal(name + ' wrapper plus');
+            expect(s.getName()).to.equal(name + ' wrapper');
+            expect(s.getLongName()).to.equal(name + ' wrapper plus');
         });
 
         it('should support inheritance with default constructor correctly', function () {
@@ -98,22 +98,22 @@ describe('util.class', function () {
                     $constructor: function (name) {
                         this.name = name;
                     },
-                    get_name: function () {
-                        return name;
+                    getName: function () {
+                        return this.name;
                     }
                 }),
                 Student = Class({
                     $extends: [Person],
-                    get_long_name: function () {
-                        return this.get_name() + ' plus';
+                    getLongName: function () {
+                        return this.getName() + ' plus';
                     }
                 }),
                 name = 'Bob',
                 s = new Student(name);
 
             expect(s.name).to.equal(name);
-            expect(s.get_name()).to.equal(name);
-            expect(s.get_long_name()).to.equal(name + ' plus');
+            expect(s.getName()).to.equal(name);
+            expect(s.getLongName()).to.equal(name + ' plus');
         });
 
         it('should support inheritance with array style correctly', function () {
@@ -121,8 +121,8 @@ describe('util.class', function () {
                     $constructor: function (name) {
                         this.name = name;
                     },
-                    get_name: function () {
-                        return name;
+                    getName: function () {
+                        return this.name;
                     }
                 }),
                 Student = Class({
@@ -130,16 +130,16 @@ describe('util.class', function () {
                         this.$super.constructor.call(this, name);
                     },
                     $extends: [Person],
-                    get_long_name: function () {
-                        return this.get_name() + ' plus';
+                    getLongName: function () {
+                        return this.getName() + ' plus';
                     }
                 }),
                 name = 'Bob',
                 s = new Student(name);
 
             expect(s.name).to.equal(name);
-            expect(s.get_name()).to.equal(name);
-            expect(s.get_long_name()).to.equal(name + ' plus');
+            expect(s.getName()).to.equal(name);
+            expect(s.getLongName()).to.equal(name + ' plus');
         });
 
         it('should support multiple inheritances correctly', function () {
@@ -147,8 +147,8 @@ describe('util.class', function () {
                     $constructor: function (name) {
                         this.name = name;
                     },
-                    get_name: function () {
-                        return name;
+                    getName: function () {
+                        return this.name;
                     }
                 }),
                 Worker = Class({
@@ -161,7 +161,7 @@ describe('util.class', function () {
                 }),
                 Humanbeing = Class({
                     $extends: Person,
-                    get_name: function () {
+                    getName: function () {
                         return 'Humanbeing';
                     },
                     pick: function () {
@@ -176,16 +176,16 @@ describe('util.class', function () {
                         this.$super.constructor.call(this, name);
                     },
                     $extends: [Person, Worker, Humanbeing],
-                    get_long_name: function () {
-                        return this.get_name() + ' plus';
+                    getLongName: function () {
+                        return this.getName() + ' plus';
                     }
                 }),
                 name = 'Bob',
                 s = new Student(name);
 
             expect(s.name).to.equal(name);
-            expect(s.get_name()).to.equal(name);
-            expect(s.get_long_name()).to.equal(name + ' plus');
+            expect(s.getName()).to.equal(name);
+            expect(s.getLongName()).to.equal(name + ' plus');
             expect(s.work()).to.equal('working');
             expect(s.pick()).to.equal('tool');
             expect(s.eat()).to.equal('eating');

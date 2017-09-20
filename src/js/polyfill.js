@@ -3,10 +3,10 @@
 // ------------------------------------------------------------------
 
 if (typeof Array.prototype.indexOf !== 'function') {
-    Array.prototype.indexOf = function (element, start_index) {
+    Array.prototype.indexOf = function (element, startIndex) {
         var len = this.length,
             i;
-        for (i = (start_index || 0); i < len; i += 1) {
+        for (i = (startIndex || 0); i < len; i += 1) {
             if (this[i] === element) {
                 return i;
             }

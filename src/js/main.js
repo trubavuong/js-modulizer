@@ -2,15 +2,14 @@
 // Setup application entry point.
 // ------------------------------------------------------------------
 
-/* jshint ignore:start */
-var app = (function () {
+var app = (function () { // eslint-disable-line
     var MODULE_STATUS = {
             NONE: 0,
             LOADING: 'loading...',
             LOADED: 'ok'
         },
         modules = {},
-        module_id = 0;
+        moduleId = 0;
 
     /**
      * Module getter/setter.
@@ -37,11 +36,11 @@ var app = (function () {
      * @return {*}              module for getter
      */
     function module(name, handler) {
-        var is_registered = name in modules,
+        var isRegistered = name in modules,
             mod;
         // getter
         if (handler === undefined) {
-            if (!is_registered) {
+            if (!isRegistered) {
                 throw new Error('Module "' + name + '" could not be found');
             }
 
@@ -49,8 +48,8 @@ var app = (function () {
             mod = modules[name];
             if (mod.status === MODULE_STATUS.NONE) {
                 // mark it's loading
-                module_id += 1;
-                mod.id = module_id;
+                moduleId += 1;
+                mod.id = moduleId;
                 mod.status = MODULE_STATUS.LOADING;
 
                 // then mark it's loaded
@@ -60,20 +59,20 @@ var app = (function () {
             // try to load 'not loaded' module again => circular dependencies
             else if (mod.status === MODULE_STATUS.LOADING) {
                 // print stack trace
-                var modules_list = [],
+                var usedModules = [],
                     stack = '',
-                    module_name,
+                    moduleName,
                     module,
                     i;
 
-                for (module_name in modules) {
-                    mod = modules[module_name];
+                for (moduleName in modules) {
+                    mod = modules[moduleName];
                     if (mod.status !== MODULE_STATUS.NONE) {
-                        modules_list.push(modules[module_name]);
+                        usedModules.push(modules[moduleName]);
                     }
                 }
 
-                modules_list.sort(function (m1, m2) {
+                usedModules.sort(function (m1, m2) {
                     if (m1.id === m2.id) {
                         return 0;
                     }
@@ -82,10 +81,10 @@ var app = (function () {
                     }
                     return 1;
                 });
-                modules_list.push(mod);
+                usedModules.push(mod);
 
-                for (i = 0; i < modules_list.length; i += 1) {
-                    module = modules_list[i];
+                for (i = 0; i < usedModules.length; i += 1) {
+                    module = usedModules[i];
                     stack += module.id + '. (' + module.name + ' => ' + module.status + ')\n';
                 }
 
@@ -96,7 +95,7 @@ var app = (function () {
         }
         // setter
         else {
-            if (is_registered) {
+            if (isRegistered) {
                 throw new Error('Module "' + name + '" had been already registered');
             }
 
@@ -107,8 +106,8 @@ var app = (function () {
             };
 
             if (mod.status === MODULE_STATUS.LOADED) {
-                module_id += 1;
-                mod.id = module_id;
+                moduleId += 1;
+                mod.id = moduleId;
             }
         }
     }

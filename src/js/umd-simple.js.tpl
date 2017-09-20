@@ -4,7 +4,7 @@
     // Change app name to anything to use as global entry point
     var APP_NAME = 'app';
 
-    <%= app_decleration %>
+<%= appDecleration %>
     // UMD: AMD + CommonJS + Browser
     if (typeof define === 'function' && define.amd) {
         // AMD

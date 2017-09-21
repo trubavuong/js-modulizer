@@ -1,3 +1,5 @@
+'use strict';
+
 describe('app', function () {
     var expect = require('chai').expect,
         moduleName = 'module';

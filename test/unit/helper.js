@@ -1,3 +1,5 @@
+'use strict';
+
 // create 'window' entry point
 global.window = global;
 

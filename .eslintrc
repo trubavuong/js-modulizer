@@ -9,8 +9,8 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "sourceType": "module",
-        "ecmaVersion": 6
+        "sourceType": "script",
+        "ecmaVersion": 5
     },
     "rules": {
         "for-direction": "error",

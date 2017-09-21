@@ -1,3 +1,5 @@
+'use strict';
+
 describe('util.class', function () {
     var expect = require('chai').expect,
         Class;

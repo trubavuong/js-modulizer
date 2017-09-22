@@ -57,6 +57,7 @@ module.exports = function (grunt) {
         'cssmin:dist',
         'copy:dist'
     ]);
+
     grunt.registerTask('dist-debug', [
         'clean:dist',
         'eslint:distBeforeConcat',
@@ -67,12 +68,18 @@ module.exports = function (grunt) {
         'cssmin:dist',
         'copy:dist'
     ]);
-    grunt.registerTask('release', ['dist', 'compress:dist']);
+
+    grunt.registerTask('release', [
+        'dist',
+        'compress:dist'
+    ]);
+
     grunt.registerTask('concat:dist', [
         'concat:distNonBaseJsSrc',
         'concat:distBaseJsSrc',
         'concat:distMergeTemplate'
     ]);
+
     grunt.registerTask('eslint:distAfterConcat', [
         'eslint:distAfterConcatDefault',
         'eslint:distAfterConcatStrict'

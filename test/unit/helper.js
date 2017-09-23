@@ -3,14 +3,21 @@
 // create 'window' entry point
 global.window = global;
 
-module.exports = global.helper = {
-    _appPath: '../../dist/js-modulizer/js-modulizer/js/js-modulizer.min.js',
+module.exports = global.helper = (function () {
+    var path = require('path'),
+        rootPath = '../../dist/js-modulizer/js-modulizer',
+        appPath = path.join(rootPath, 'js/js-modulizer.min.js');
 
-    loadApp: function () {
-        window.app = require(this._appPath);
-    },
-    unloadApp: function () {
-        delete window.app;
-        delete require.cache[require.resolve(this._appPath)];
-    }
-};
+    return {
+        rootPath: rootPath,
+        appPath: appPath,
+
+        loadApp: function () {
+            window.app = require(this.appPath);
+        },
+        unloadApp: function () {
+            delete window.app;
+            delete require.cache[require.resolve(this.appPath)];
+        }
+    };
+}());

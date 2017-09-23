@@ -5,7 +5,7 @@ module.exports = function (grunt) {
         mochaPath = path.join('node_modules', '.bin', 'mocha'),
         _mochaPath = path.join('node_modules', 'mocha', 'bin', '_mocha'),
         istanbulPath = path.join('node_modules', '.bin', 'istanbul'),
-        unitTestSpec = ' "src/**/*.spec.js" --recursive --check-leaks --globals app --use_strict --require test/unit/helper.js -b -c ',
+        unitTestSpec = ' "src/js/**/*.spec.js" --recursive --check-leaks --globals app --use_strict --require test/unit/helper.js -b -c ',
         e2eTestSpec = ' "test/e2e/**/*.spec.js" ',
         appName = '<%= pkg.name %>',
         appRootDir = 'dist/' + appName,

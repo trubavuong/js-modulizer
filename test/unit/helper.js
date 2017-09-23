@@ -5,7 +5,7 @@ global.window = global;
 
 module.exports = global.helper = (function () {
     var path = require('path'),
-        rootPath = '../../dist/js-modulizer/js-modulizer',
+        rootPath = path.join(__dirname, '../../dist/js-modulizer/js-modulizer'),
         appPath = path.join(rootPath, 'js/js-modulizer.min.js');
 
     return {
